@@ -149,7 +149,7 @@ class SkeletonScreenLayout extends StatelessWidget {
               child: card,
             );
           }
-          return Expanded(child: card);
+          return card;
         }),
       ),
     );

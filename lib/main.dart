@@ -15,6 +15,16 @@ void main() async {
   runApp(const MyApp());
 }
 
+/// 콘텐츠가 비어 있어도 스크롤 가능 + 바깥으로 당겼다 놓으면 탄성 있게 복귀 (웹 포함)
+class _AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const AlwaysScrollableScrollPhysics(
+      parent: BouncingScrollPhysics(),
+    );
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -24,7 +34,11 @@ class MyApp extends StatelessWidget {
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const AppWrapper(),
+      scrollBehavior: _AppScrollBehavior(),
+      home: ScrollConfiguration(
+        behavior: _AppScrollBehavior(),
+        child: const AppWrapper(),
+      ),
     );
   }
 }

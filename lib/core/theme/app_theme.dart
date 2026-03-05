@@ -18,10 +18,13 @@ class AppColors {
   static const Color yellowDark = Color(0xFFFF8F00);
 
   /// 그레이톤 (노란 휴 + 낮은 채도): 배경·서페이스
+  /// 배경: 전반적으로 약한 그레이톤
   static Color get grayBackground =>
-      _gray(yellowHue, 0.06, 0.98);
+      _gray(yellowHue, 0.04, 0.97);
   static Color get graySurface =>
       _gray(yellowHue, 0.06, 0.96);
+  /// 영역 카드용 흰색 (그림자와 함께 사용)
+  static const Color cardSurface = Colors.white;
   static Color get graySurfaceVariant =>
       _gray(yellowHue, 0.08, 0.93);
   static Color get grayOutline =>
@@ -75,7 +78,7 @@ class AppTheme {
           fontFamily: _fontFamily,
           color: AppColors.grayOnSurface,
           fontSize: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -86,15 +89,19 @@ class AppTheme {
         unselectedItemColor: AppColors.grayMuted,
         selectedLabelStyle: const TextStyle(
           fontFamily: _fontFamily,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
         ),
-        unselectedLabelStyle: const TextStyle(fontFamily: _fontFamily),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       scaffoldBackgroundColor: AppColors.grayBackground,
       cardTheme: CardThemeData(
-        color: AppColors.graySurface,
-        elevation: 4,
-        shadowColor: Colors.black26,
+        color: AppColors.cardSurface,
+        elevation: 6,
+        shadowColor: Colors.black.withOpacity(0.08),
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -115,24 +122,24 @@ class AppTheme {
     );
   }
 
-  /// 용도별 Pretendard 굵기
+  /// 용도별 Pretendard 굵기 (한 단계씩 올림)
   static TextTheme _buildTextTheme() {
     return TextTheme(
-      displayLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 32),
-      displayMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 28),
-      displaySmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 24),
-      headlineLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 22),
-      headlineMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 20),
-      headlineSmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 18),
-      titleLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 16),
-      titleMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 14),
-      titleSmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 12),
-      bodyLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w400, fontSize: 16),
-      bodyMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w400, fontSize: 14),
-      bodySmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w400, fontSize: 12),
-      labelLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 14),
-      labelMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 12),
-      labelSmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 10),
+      displayLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w800, fontSize: 32),
+      displayMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w800, fontSize: 28),
+      displaySmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w800, fontSize: 24),
+      headlineLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w800, fontSize: 22),
+      headlineMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 20),
+      headlineSmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 18),
+      titleLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w700, fontSize: 16),
+      titleMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 14),
+      titleSmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 12),
+      bodyLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 16),
+      bodyMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 14),
+      bodySmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w500, fontSize: 12),
+      labelLarge: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 14),
+      labelMedium: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 12),
+      labelSmall: const TextStyle(fontFamily: _fontFamily, fontWeight: FontWeight.w600, fontSize: 10),
     );
   }
 }
