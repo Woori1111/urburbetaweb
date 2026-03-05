@@ -27,8 +27,8 @@ class _StaggeredRevealState extends State<StaggeredReveal>
   @override
   void initState() {
     super.initState();
-    _durationTotalMs = widget.durationMs +
-        (widget.children.length - 1) * widget.staggerMs;
+    _durationTotalMs = (widget.durationMs +
+        (widget.children.length - 1) * widget.staggerMs).toDouble();
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: _durationTotalMs.round()),
