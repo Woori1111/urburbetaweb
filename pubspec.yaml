@@ -62,6 +62,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/urbur_logo.png
   # 배너·아이콘 추가 시 아래도 추가
   #   - assets/banner/
   #   - assets/icons/

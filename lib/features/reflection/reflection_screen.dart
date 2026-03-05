@@ -8,7 +8,9 @@ import '../hall_of_fame/hall_of_fame_repository.dart';
 import 'reflection_repository.dart';
 
 class ReflectionScreen extends StatefulWidget {
-  const ReflectionScreen({super.key});
+  const ReflectionScreen({super.key, required this.currentIndex, required this.tabIndex});
+  final int currentIndex;
+  final int tabIndex;
 
   @override
   State<ReflectionScreen> createState() => _ReflectionScreenState();
@@ -70,6 +72,7 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
       ),
       body: SafeArea(
         child: ScreenRevealWrapper(
+          revealTrigger: widget.currentIndex == widget.tabIndex,
           skeletonCardCount: 2,
           contentCards: [
             Padding(
@@ -133,6 +136,8 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
                                     width: 40,
                                     height: 40,
                                     fit: BoxFit.cover,
+                                    cacheWidth: 80,
+                                    cacheHeight: 80,
                                     errorBuilder: (_, __, ___) => const Icon(Icons.image),
                                   ),
                                 ),

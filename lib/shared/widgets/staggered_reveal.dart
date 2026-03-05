@@ -22,15 +22,16 @@ class StaggeredReveal extends StatefulWidget {
 class _StaggeredRevealState extends State<StaggeredReveal>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late double _durationTotalMs;
 
   @override
   void initState() {
     super.initState();
-    final totalMs =
-        widget.durationMs + (widget.children.length - 1) * widget.staggerMs;
+    _durationTotalMs = widget.durationMs +
+        (widget.children.length - 1) * widget.staggerMs;
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: totalMs),
+      duration: Duration(milliseconds: _durationTotalMs.round()),
     )..forward();
   }
 
@@ -42,13 +43,15 @@ class _StaggeredRevealState extends State<StaggeredReveal>
 
   @override
   Widget build(BuildContext context) {
+    final total = _durationTotalMs;
+    final durationMs = widget.durationMs.toDouble();
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
       children: List.generate(widget.children.length, (i) {
-        final start = i * widget.staggerMs / (widget.durationMs + (widget.children.length - 1) * widget.staggerMs);
-        final end = start + widget.durationMs / (widget.durationMs + (widget.children.length - 1) * widget.staggerMs);
+        final start = (i * widget.staggerMs) / total;
+        final end = start + durationMs / total;
         return AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {

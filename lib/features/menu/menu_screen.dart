@@ -8,7 +8,9 @@ import '../../shared/widgets/screen_reveal_wrapper.dart';
 import '../auth/login_screen.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({super.key});
+  const MenuScreen({super.key, required this.currentIndex, required this.tabIndex});
+  final int currentIndex;
+  final int tabIndex;
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -116,25 +118,28 @@ class _MenuScreenState extends State<MenuScreen> {
         centerTitle: false,
       ),
       body: SafeArea(
-        child: ScreenRevealWrapper(
-          skeletonCardCount: 2,
-          contentCards: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-              child: profileCard,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildOfficersCard(context),
-                  const SizedBox(height: 16),
-                  _buildMenuList(context),
-                ],
+        child: SingleChildScrollView(
+          child: ScreenRevealWrapper(
+            revealTrigger: widget.currentIndex == widget.tabIndex,
+            skeletonCardCount: 2,
+            contentCards: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: profileCard,
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildOfficersCard(context),
+                    const SizedBox(height: 16),
+                    _buildMenuList(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -151,26 +156,26 @@ class _MenuScreenState extends State<MenuScreen> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
               child: Text(
                 '임원진',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                     ),
               ),
             ),
             SizedBox(
-              height: 88,
+              height: 132,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 18),
                 itemCount: officers.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, __) => const SizedBox(width: 18),
                 itemBuilder: (context, index) {
                   final o = officers[index];
                   return _OfficerChip(name: o.name, imageUrl: o.imageUrl);
@@ -185,23 +190,20 @@ class _MenuScreenState extends State<MenuScreen> {
 
   Widget _buildMenuList(BuildContext context) {
     final items = [
-      _MenuItem(icon: Icons.people_rounded, title: '역대 임원진', onTap: () {}),
-      _MenuItem(icon: Icons.music_note_rounded, title: '음원', onTap: () {}),
-      _MenuItem(icon: Icons.play_circle_rounded, title: '유튜브', onTap: () {}),
+      _MenuItem(title: '역대 임원진', onTap: () {}),
+      _MenuItem(title: '음원', onTap: () {}),
+      _MenuItem(title: '유튜브', onTap: () {}),
     ];
 
     return Card(
       child: Column(
         children: [
-          for (var i = 0; i < items.length; i++) ...[
-            if (i > 0) const Divider(height: 1),
+          for (final item in items)
             ListTile(
-              leading: Icon(items[i].icon, color: AppColors.yellowDark, size: 24),
-              title: Text(items[i].title),
+              title: Text(item.title),
               trailing: Icon(Icons.chevron_right_rounded, color: AppColors.grayMuted),
-              onTap: items[i].onTap,
+              onTap: item.onTap,
             ),
-          ],
         ],
       ),
     );
@@ -226,18 +228,18 @@ class _OfficerChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         CircleAvatar(
-          radius: 28,
+          radius: 42,
           backgroundColor: AppColors.graySurfaceVariant,
           backgroundImage: imageUrl != null && imageUrl!.isNotEmpty
               ? NetworkImage(imageUrl!)
               : null,
           child: imageUrl == null || imageUrl!.isEmpty
-              ? Icon(Icons.person_rounded, size: 28, color: AppColors.grayMuted)
+              ? Icon(Icons.person_rounded, size: 42, color: AppColors.grayMuted)
               : null,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 9),
         SizedBox(
-          width: 56,
+          width: 84,
           child: Text(
             name,
             style: Theme.of(context).textTheme.labelSmall,
@@ -253,11 +255,9 @@ class _OfficerChip extends StatelessWidget {
 
 class _MenuItem {
   const _MenuItem({
-    required this.icon,
     required this.title,
     required this.onTap,
   });
-  final IconData icon;
   final String title;
   final VoidCallback onTap;
 }

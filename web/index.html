@@ -35,16 +35,56 @@
 
   <title>우리동아리</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background-color: #faf9f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    #loading img {
+      width: 240px;
+      max-width: 80vw;
+      height: auto;
+      object-fit: contain;
+    }
+    #loading .text {
+      margin-top: 24px;
+      font-size: 16px;
+      color: #6b5d52;
+      min-height: 1.5em;
+    }
+    #loading .text::after { content: attr(data-dots); }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <div id="loading">
+    <img src="images/urbur_logo.png" alt="urbur" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <span style="display:none; font-size: 48px; color: #9e8f84;">◆</span>
+    <div class="text" id="loading-text" data-dots=".">로딩중</div>
+  </div>
+  <script>
+    (function() {
+      var dots = 1;
+      var el = document.getElementById('loading-text');
+      setInterval(function() {
+        dots = (dots % 3) + 1;
+        el.setAttribute('data-dots', '.'.repeat(dots));
+      }, 400);
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

@@ -8,7 +8,9 @@ import '../../shared/widgets/screen_reveal_wrapper.dart';
 import 'community_repository.dart';
 
 class CommunityScreen extends StatefulWidget {
-  const CommunityScreen({super.key});
+  const CommunityScreen({super.key, required this.currentIndex, required this.tabIndex});
+  final int currentIndex;
+  final int tabIndex;
 
   @override
   State<CommunityScreen> createState() => _CommunityScreenState();
@@ -96,6 +98,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ),
       body: SafeArea(
         child: ScreenRevealWrapper(
+          revealTrigger: widget.currentIndex == widget.tabIndex,
           skeletonCardCount: 2,
           contentCards: [
             Padding(
@@ -171,7 +174,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.groups_rounded,
+                  Icons.forest_rounded,
                   size: 48,
                   color: Theme.of(context).colorScheme.secondary,
                 ),

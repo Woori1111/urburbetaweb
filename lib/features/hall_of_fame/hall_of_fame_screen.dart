@@ -8,7 +8,9 @@ import '../../shared/widgets/screen_reveal_wrapper.dart';
 import 'hall_of_fame_repository.dart';
 
 class HallOfFameScreen extends StatefulWidget {
-  const HallOfFameScreen({super.key});
+  const HallOfFameScreen({super.key, required this.currentIndex, required this.tabIndex});
+  final int currentIndex;
+  final int tabIndex;
 
   @override
   State<HallOfFameScreen> createState() => _HallOfFameScreenState();
@@ -47,6 +49,32 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onFabPressed() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: const Text(
+          '선정적이거나 선넘은 사진은 올리면 영구정지',
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.yellow,
+                foregroundColor: AppColors.grayOnSurface,
+              ),
+              child: const Text('확인'),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) await _pickAndUploadPhoto();
   }
 
   Future<void> _pickAndUploadPhoto() async {
@@ -105,7 +133,7 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.error_outline, size: 48, color: AppColors.grayMuted),
+                          Icon(Icons.error_outline, size: 48, color: AppColors.grayMuted),
                           const SizedBox(height: 16),
                           Text('오류: ${snapshot.error}', textAlign: TextAlign.center),
                         ],
@@ -115,6 +143,7 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
                 ),
               );
               return ScreenRevealWrapper(
+                revealTrigger: widget.currentIndex == widget.tabIndex,
                 skeletonCardCount: 1,
                 contentCards: [errorCard],
               );
@@ -162,6 +191,7 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
                 ),
               );
               return ScreenRevealWrapper(
+                revealTrigger: widget.currentIndex == widget.tabIndex,
                 skeletonCardCount: 1,
                 contentCards: [emptyCard],
               );
@@ -205,6 +235,7 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
               ),
             );
             return ScreenRevealWrapper(
+              revealTrigger: widget.currentIndex == widget.tabIndex,
               skeletonCardCount: 1,
               contentCards: [contentCard],
             );
@@ -212,7 +243,7 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
         ),
       ),
       floatingActionButton: ScaleOpacityPressed(
-        onPressed: _pickAndUploadPhoto,
+        onPressed: _onFabPressed,
         child: IgnorePointer(
           child: AnimatedSize(
             duration: const Duration(milliseconds: 220),
@@ -223,13 +254,14 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
                     icon: const Icon(Icons.photo_camera_rounded),
                     label: const Text('사진 등록'),
                     backgroundColor: AppColors.yellow,
-foregroundColor: AppColors.grayOnSurface,
-              )
-            : FloatingActionButton(
-                onPressed: () {},
-                child: const Icon(Icons.photo_camera_rounded),
-                backgroundColor: AppColors.yellow,
-                foregroundColor: AppColors.grayOnSurface,
+                    foregroundColor: AppColors.grayOnSurface,
+                    shape: const StadiumBorder(),
+                  )
+                : FloatingActionButton(
+                    onPressed: () {},
+                    child: const Icon(Icons.photo_camera_rounded),
+                    backgroundColor: AppColors.yellow,
+                    foregroundColor: AppColors.grayOnSurface,
                   ),
           ),
         ),
@@ -340,6 +372,8 @@ class _PodiumSlot extends StatelessWidget {
               width: width,
               height: _podiumHeight,
               fit: BoxFit.cover,
+              cacheWidth: (width * 2).round(),
+              cacheHeight: (_podiumHeight * 2).round(),
               errorBuilder: (_, __, ___) => Container(
                 color: AppColors.surfaceVariant,
                 child: const Icon(Icons.broken_image_outlined),
@@ -356,7 +390,7 @@ class _PodiumSlot extends StatelessWidget {
             '$rank등',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: AppColors.yellowDark,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
           ),
           const SizedBox(height: 4),
@@ -468,7 +502,7 @@ class _PhotoTile extends StatelessWidget {
               '정지되었습니다. 반성문을 작성하세요',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.error,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
               textAlign: TextAlign.center,
             ),

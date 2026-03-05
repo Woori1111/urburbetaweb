@@ -72,6 +72,8 @@ class _JellyNavItemState extends State<_JellyNavItem>
           onTap: _onTap,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
           child: AnimatedBuilder(
             animation: _scale,
             builder: (context, child) {
@@ -91,9 +93,9 @@ class _JellyNavItemState extends State<_JellyNavItem>
                   Text(
                     widget.label,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 9,
                       color: color,
-                      fontWeight: widget.selected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: widget.selected ? FontWeight.w700 : FontWeight.w600,
                     ),
                   ),
                 ],

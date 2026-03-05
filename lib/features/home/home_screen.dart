@@ -3,15 +3,27 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/app_bar_logo.dart';
 import '../../shared/widgets/scale_opacity_pressed.dart';
+import '../../shared/widgets/screen_reveal_wrapper.dart';
 
-/// 홈 아이콘 8개 제목 (4개씩 2줄)
-const List<String> _homeIconTitles = [
-  '아이콘1', '아이콘2', '아이콘3', '아이콘4',
-  '아이콘5', '아이콘6', '아이콘7', '아이콘8',
+/// 홈 아이콘 8개 (4개씩 2줄) — 아이콘 크기 고정, 여백만 반응형 (iPhone 15 Pro 393pt 기준)
+const List<({IconData icon, String label})> _homeIconItems = [
+  (icon: Icons.volunteer_activism_rounded, label: '지원'),
+  (icon: Icons.emoji_events_rounded, label: '명예의전당'),
+  (icon: Icons.people_rounded, label: '임원진'),
+  (icon: Icons.photo_library_rounded, label: '추억'),
+  (icon: Icons.forest_rounded, label: '대나무숲'),
+  (icon: Icons.edit_note_rounded, label: '반성문'),
+  (icon: Icons.person_off_rounded, label: '배신자'),
+  (icon: Icons.music_note_rounded, label: '음원'),
 ];
 
+const double _homeIconSize = 40;
+const double _homeIconBoxSize = 64;
+
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.currentIndex, required this.tabIndex});
+  final int currentIndex;
+  final int tabIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +36,14 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildBanner(context),
-              _buildIconGrid(context),
-              _buildMemoriesSection(context),
-              _buildSupportButton(context),
+          child: ScreenRevealWrapper(
+            revealTrigger: currentIndex == tabIndex,
+            skeletonCardCount: 4,
+            contentCards: [
+              _buildBannerCard(context),
+              _buildIconGridCard(context),
+              _buildMemoriesCard(context),
+              _buildSupportCard(context),
             ],
           ),
         ),
@@ -38,11 +51,11 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBanner(BuildContext context) {
+  Widget _buildBannerCard(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
         child: AspectRatio(
           aspectRatio: 2.2,
           child: Container(
@@ -70,66 +83,79 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildIconGrid(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(4, (i) => _buildIconItem(context, i)),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(4, (i) => _buildIconItem(context, i + 4)),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildIconGridCard(BuildContext context) {
+    final padding = MediaQuery.paddingOf(context);
+    final width = MediaQuery.sizeOf(context).width - padding.horizontal - 24;
+    final horizontalPadding = (width / 4 - _homeIconBoxSize).clamp(8.0, 24.0) / 2;
+    final verticalSpacing = 20.0;
 
-  Widget _buildIconItem(BuildContext context, int index) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // webp 넣을 자리: assets/icons/icon_1.webp ~ icon_8.webp 추가 후 Image.asset 사용
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  color: AppColors.graySurfaceVariant,
-                  child: Icon(
-                    Icons.image_outlined,
-                    size: 32,
-                    color: AppColors.grayMuted,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            children: [
+              Row(
+                children: List.generate(4, (i) => Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                    child: _buildIconItem(context, i),
                   ),
-                ),
+                )),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _homeIconTitles[index],
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+              SizedBox(height: verticalSpacing),
+              Row(
+                children: List.generate(4, (i) => Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                    child: _buildIconItem(context, i + 4),
                   ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+                )),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildMemoriesSection(BuildContext context) {
+  Widget _buildIconItem(BuildContext context, int index) {
+    final item = _homeIconItems[index];
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: _homeIconBoxSize,
+          height: _homeIconBoxSize,
+          decoration: BoxDecoration(
+            color: AppColors.graySurfaceVariant,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            item.icon,
+            size: _homeIconSize,
+            color: AppColors.grayMuted,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          item.label,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMemoriesCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Card(
         child: InkWell(
           onTap: () {},
@@ -171,21 +197,26 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSupportButton(BuildContext context) {
+  Widget _buildSupportCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 16, 12, 24),
-      child: ScaleOpacityPressed(
-        onPressed: () {},
-        child: IgnorePointer(
-          child: FilledButton(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: ScaleOpacityPressed(
             onPressed: () {},
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.yellow,
-              foregroundColor: AppColors.grayOnSurface,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              minimumSize: const Size.fromHeight(52),
+            child: IgnorePointer(
+              child: FilledButton(
+                onPressed: () {},
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.yellow,
+                  foregroundColor: AppColors.grayOnSurface,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: const Size.fromHeight(52),
+                ),
+                child: const Text('지원하기'),
+              ),
             ),
-            child: const Text('지원하기'),
           ),
         ),
       ),
