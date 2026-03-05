@@ -105,7 +105,7 @@ class _HallOfFameScreenState extends State<HallOfFameScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.error_outline, size: 48, color: AppColors.grayMuted),
+                          Icon(Icons.error_outline, size: 48, color: AppColors.grayMuted),
                           const SizedBox(height: 16),
                           Text('오류: ${snapshot.error}', textAlign: TextAlign.center),
                         ],
